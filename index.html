@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Interativo Midscene.js x p5.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        
+        body {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Space Mono', monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            border-bottom: 2px solid #00ff41;
+            width: 100%;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1000px;
+        }
+        #canvas-container {
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        .controls {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            min-width: 300px;
+        }
+        h2 { color: #ff00ff; }
+        .instruction {
+            background: #1a1a1a;
+            padding: 10px;
+            border-left: 4px solid #ff00ff;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        input[type=range] { width: 100%; }
+        button {
+            background: #ff00ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 100%;
+        }
+        button:hover { background: #d400d4; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>MIDSCENE.JS // VJ ADA ERROR</h1>
+    <p>Tutorial: Programação Generativa via Intenção</p>
+</header>
+
+<div class="container">
+    <div id="canvas-container"></div>
+
+    <div class="controls">
+        <h2>Painel de Controle</h2>
+        
+        <label>Caos (Glitches):</label><br>
+        <input type="range" id="chaos-slider" min="0" max="100" value="20">
+        
+        <br><br>
+        
+        <label>Velocidade (BPM):</label><br>
+        <input type="range" id="speed-slider" min="1" max="10" value="5">
+        
+        <br><br>
+        
+        <button id="glitch-btn">DISPARAR GLITCH</button>
+
+        <div class="instruction">
+            <strong>Desafio para o Aluno:</strong><br>
+            Use o Midscene.js para automatizar esta interface.<br>
+            <em>Ex: "Aumente o caos para 80% e clique no botão de glitch a cada 2 segundos."</em>
+        </div>
+    </div>
+</div>
+
+<script>
+    let chaos = 20;
+    let speed = 5;
+    let particles = [];
+
+    function setup() {
+        let canvas = createCanvas(600, 400);
+        canvas.parent('canvas-container');
+        for(let i=0; i<50; i++) particles.push(new Particle());
+    }
+
+    function draw() {
+        background(0, 15);
+        chaos = document.getElementById('chaos-slider').value;
+        speed = document.getElementById('speed-slider').value;
+
+        particles.forEach(p => {
+            p.update();
+            p.show();
+        });
+    }
+
+    class Particle {
+        constructor() {
+            this.pos = createVector(random(width), random(height));
+            this.vel = p5.Vector.random2D();
+        }
+        update() {
+            let noisy = map(noise(frameCount * 0.01), 0, 1, -chaos/10, chaos/10);
+            this.pos.add(this.vel.copy().mult(speed/2).add(noisy, noisy));
+            if(this.pos.x > width) this.pos.x = 0;
+            if(this.pos.x < 0) this.pos.x = width;
+            if(this.pos.y > height) this.pos.y = 0;
+            if(this.pos.y < 0) this.pos.y = height;
+        }
+        show() {
+            stroke(0, 255, 65);
+            if(random(100) < chaos/5) stroke(255, 0, 255);
+            strokeWeight(2);
+            point(this.pos.x, this.pos.y);
+        }
+    }
+
+    document.getElementById('glitch-btn').onclick = () => {
+        background(255, 0, 255);
+        console.log("Glitch acionado via interface!");
+    };
+</script>
+
+</body>
+</html>
