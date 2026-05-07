@@ -1,0 +1,12 @@
+{
+  "name": "midscene-art-tutorial",
+  "version": "1.0.0",
+  "description": "Tutorial de Midscene.js para Artistas",
+  "main": "index.js",
+  "scripts": {
+    "test": "midscene run ./automation/tutorial.test.ts"
+  },
+  "dependencies": {
+    "@midscene/web": "latest"
+  }
+}
